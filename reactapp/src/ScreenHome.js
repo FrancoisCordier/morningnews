@@ -51,6 +51,7 @@ function ScreenHome(props) {
           setIsLogged(true);
           props.addToken(response.data.token);
           props.initializeStore(response.data.user);
+          props.setLanguage(response.data.user.favoriteLanguage);
         }
       });
   };
@@ -170,6 +171,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     initializeStore: function (user) {
       dispatch({ type: "initializeStore", user: user });
+    },
+    setLanguage: function (language) {
+      dispatch({ type: "setLanguage", language: language });
     },
   };
 };

@@ -49,6 +49,7 @@ router.post(
           email: email,
           password: hash,
           token: uid(32),
+          favoriteLanguage: "fr",
         });
         await newUser.save();
         res.json({ Added: true, token: newUser.token });

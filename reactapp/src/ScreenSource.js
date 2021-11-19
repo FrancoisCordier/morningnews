@@ -3,8 +3,8 @@ import "./App.css";
 import { List, Avatar } from "antd";
 import Nav from "./Nav";
 import axios from "axios";
-import { Link, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { connect, useSelector } from "react-redux";
 
 const newsAPI = axios.create({
   baseURL: "https://newsapi.org/v2/",
@@ -14,22 +14,34 @@ function ScreenSource(props) {
   const [sourceList, setSourceList] = useState([]);
   const [language, setLanguage] = useState("fr");
 
-  console.log(props.state);
-
   const changeLanguage = (language) => {
     setLanguage(language === "french" ? "fr" : "gb");
   };
 
-  useEffect(() => {
-    newsAPI
+  console.log(props.state.language);
+  //console.log(language);
+
+  const getSources = async () => {
+    await newsAPI
       .get("/top-headlines/sources", {
         params: {
           apiKey: "f349b8c728944e15b3bf505ea1ec4cea",
-          country: language,
+          country: props.state.language,
         },
       })
       .then((response) => setSourceList(response.data.sources));
-  }, [language]);
+  };
+  useEffect(() => {
+    // newsAPI
+    //   .get("/top-headlines/sources", {
+    //     params: {
+    //       apiKey: "f349b8c728944e15b3bf505ea1ec4cea",
+    //       country: props.state.language,
+    //     },
+    //   })
+    //   .then((response) => setSourceList(response.data.sources));
+    getSources();
+  }, [props.state.language]);
 
   return (
     <div>

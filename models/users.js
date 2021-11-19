@@ -5,6 +5,7 @@ const articleSchema = mongoose.Schema({
   description: String,
   content: String,
   urlToImage: String,
+  language: String,
 });
 
 const userSchema = mongoose.Schema({
@@ -13,6 +14,7 @@ const userSchema = mongoose.Schema({
   password: String,
   token: String,
   favoriteArticles: [articleSchema],
+  favoriteLanguage: String,
 });
 
 const userModel = mongoose.model("users", userSchema);
