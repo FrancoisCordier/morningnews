@@ -94,7 +94,12 @@ router.post(
 
       bcrypt.compare(password, userExists.password, function (err, result) {
         console.log(result);
-        if (result) res.json({ userExists: true, token: userExists.token });
+        if (result)
+          res.json({
+            userExists: true,
+            token: userExists.token,
+            user: userExists,
+          });
         else
           res.json({
             userExists: false,
@@ -117,5 +122,35 @@ router.post(
     }
   }
 );
+
+router.post("/add-to-favorite", async function (req, res) {
+  const { token, article } = req.body;
+  const user = await userModel.findOne({ token: token });
+
+  user.favoriteArticles.push(article);
+  await user.save();
+
+  res.json({ articleAdded: true });
+});
+
+router.delete("/remove-from-favorite", async function (req, res) {
+  const { token, title } = req.query;
+  const user = await userModel.findOne({ token: token });
+
+  user.favoriteArticles = user.favoriteArticles.filter(
+    (article) => article.title !== title
+  );
+
+  await user.save();
+
+  res.json({ articleRemoved: true });
+});
+
+router.get("/favorite-articles", async function (req, res, next) {
+  const token = req.query.token;
+  const user = await userModel.findOne({ token: token });
+
+  res.json({ favoriteArticles: user.favoriteArticles });
+});
 
 module.exports = router;

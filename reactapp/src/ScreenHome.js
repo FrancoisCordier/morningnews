@@ -50,6 +50,7 @@ function ScreenHome(props) {
         if (response.data.userExists) {
           setIsLogged(true);
           props.addToken(response.data.token);
+          props.initializeStore(response.data.user);
         }
       });
   };
@@ -166,6 +167,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addToken: function (token) {
       dispatch({ type: "addToken", token: token });
+    },
+    initializeStore: function (user) {
+      dispatch({ type: "initializeStore", user: user });
     },
   };
 };

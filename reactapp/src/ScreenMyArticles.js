@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Card, Icon, Modal, Empty } from "antd";
 import Nav from "./Nav";
@@ -9,6 +9,11 @@ const { Meta } = Card;
 function ScreenMyArticles(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState({});
+  const [articlesToDisplay, setArticlesToDisplay] = useState([]);
+
+  useEffect(() => {
+    setArticlesToDisplay(props.favoriteArticles);
+  }, [props.favoriteArticles]);
 
   const showModal = (article) => {
     setIsModalVisible(true);
@@ -22,7 +27,8 @@ function ScreenMyArticles(props) {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const favoriteArticles = props.favoriteArticles.map((article, index) => {
+
+  const favoriteArticles = articlesToDisplay.map((article, index) => {
     return (
       <div key={index} style={{ display: "flex", justifyContent: "center" }}>
         <Card
@@ -43,7 +49,9 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => props.removeFromFavorite(article.title)}
+              onClick={() =>
+                props.removeFromFavorite(article.title, props.token)
+              }
             />,
           ]}
         >
@@ -78,13 +86,13 @@ function ScreenMyArticles(props) {
 
 const mapStateToProps = (state) => {
   console.log(state);
-  return { favoriteArticles: state.favoriteArticles };
+  return { favoriteArticles: state.favoriteArticles, token: state.token };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeFromFavorite: function (title) {
-      dispatch({ type: "removeArticle", title });
+    removeFromFavorite: function (title, token) {
+      dispatch({ type: "removeArticle", title, token });
     },
   };
 };

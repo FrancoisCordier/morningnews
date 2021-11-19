@@ -17,7 +17,9 @@ function ScreenArticlesBySource(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState({});
   const { id } = useParams();
+
   console.log("USER TOKEN", props.token);
+
   useEffect(() => {
     newsAPI
       .get("/top-headlines", {
@@ -27,7 +29,7 @@ function ScreenArticlesBySource(props) {
         },
       })
       .then((response) => setArticleList(response.data.articles));
-  }, []);
+  }, [id]);
 
   console.log(id);
   const showModal = (article) => {
@@ -89,8 +91,8 @@ function ScreenArticlesBySource(props) {
                     key="ellipsis"
                     onClick={() =>
                       isArticleFavorite(article)
-                        ? props.removeFromFavorite(article.title)
-                        : props.addToFavorite(article)
+                        ? props.removeFromFavorite(article.title, props.token)
+                        : props.addToFavorite(article, props.token)
                     }
                   />,
                 ]}
@@ -115,11 +117,11 @@ function ScreenArticlesBySource(props) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToFavorite: function (article) {
-      dispatch({ type: "addArticle", article });
+    addToFavorite: function (article, token) {
+      dispatch({ type: "addArticle", article, token });
     },
-    removeFromFavorite: function (title) {
-      dispatch({ type: "removeArticle", title });
+    removeFromFavorite: function (title, token) {
+      dispatch({ type: "removeArticle", title, token });
     },
   };
 };
